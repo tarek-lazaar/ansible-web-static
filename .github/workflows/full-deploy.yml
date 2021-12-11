@@ -29,7 +29,7 @@ jobs:
       uses: hashicorp/setup-terraform@v1
       with:
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-        terraform_wrap : false
+        terraform_wrapper : false
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform init
@@ -65,6 +65,17 @@ jobs:
       with:
         time: '180s'
 
+    - name : Create host file
+      run : |
+        touch hosts
+        adress = $(terraform output ip_adress)
+        echo "[webserver]" >> hosts
+        echo $adress >> hosts
+        echo "[webserver:vars]" >> hosts
+        echo "ansible_user = "ubuntu"" >> hosts
+        echo "cat ${{ github.workspace }}/hosts"
+        cat ${{ github.workspace }}/hosts
+
 
 
   #ansible
@@ -85,7 +96,7 @@ jobs:
             # Optional, SSH private key
             key: ${{secrets.SSH_KEY}}
             # Optional, literal inventory file contents
-            inventory: ./inventory/hosts.cfg
+            inventory: ${{ github.workspace }}/hosts
 
 
 
