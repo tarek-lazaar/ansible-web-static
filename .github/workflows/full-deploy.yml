@@ -66,6 +66,8 @@ jobs:
         time: '180s'
 
     - name : Create host file
+      env:
+        region: "eu-west-1"
       run : |
         touch hosts
         adress = $(terraform output ip_adress)
