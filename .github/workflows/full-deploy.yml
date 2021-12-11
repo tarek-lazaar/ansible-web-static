@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
 
+
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
@@ -58,25 +59,27 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: ${{ secrets.AWS_REGION }}
 
-  ansible:
-    name : "ansible"
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
+    - name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
+      wait_for:
+        port: 22
+        host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
+        search_regex: OpenSSH
+        delay: 10
+      connection: local
 
-    steps:
-        - uses: actions/checkout@v1
-        - name: Set up Python 3.7
-          uses: actions/setup-python@v1
-          with:
+
+
+
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
             python-version: 3.7
-        - name: Install dependencies
-          run: |
+    - name: Install dependencies
+      run: |
             python -m pip install --upgrade pip
             pip install ansible==2.9.2 requests
 
-        - name: run playbook
+    - name: run playbook
 
-          run: |
+      run: |
             ansible-playbook -i ./inventory/hosts.cfg playbook.yml
