@@ -96,7 +96,7 @@ jobs:
           inventory: ${{ github.workspace }}/inventory.hosts
           options: |
             --verbose
-            --inventory .hosts
+            --inventory inventory.hosts
 
 
 
