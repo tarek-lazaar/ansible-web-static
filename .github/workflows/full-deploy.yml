@@ -7,8 +7,8 @@ on:
   pull_request:
 
 jobs:
-  terraform:
-    name: 'Terraform'
+  build:
+    name: 'Build'
     runs-on: ubuntu-latest
     environment: production
 
@@ -64,13 +64,13 @@ jobs:
     - name: Sleep for 30 seconds
       uses: jakejarvis/wait-action@master
       with:
-        time: '120s'
+        time: '60s'
 
-
-
-
-
-
+    - name : ip adress display
+      run : |
+        output=$(terraform output ip_address)
+        touch ${{ github.workspace }}/hosts
+        echo $output >> hosts
 
     - name: Checkout
       uses: actions/checkout@master
@@ -84,7 +84,7 @@ jobs:
           # Optional, SSH private key
           key: ${{secrets.SSH_KEY}}
           # Optional, literal inventory file contents
-          inventory: ./inventory/hosts.cfg
+          inventory: ${{ github.workspace }}/hosts
 
 
 
