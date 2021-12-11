@@ -62,7 +62,7 @@ resource "aws_instance" "my-instance" {
 }
 
 resource "local_file" "hosts_cfg" {
-  depends_on = [aws_instance.my-instance.public_ip]
+
   content = templatefile("./templates/hosts.tpl",
     {
       instance_address = aws_instance.my-instance.public_ip
