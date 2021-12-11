@@ -75,8 +75,8 @@ jobs:
         uses: dawidd6/action-ansible-playbook@v2
         with:
           # Required, playbook filepath
-          playbook: playbook.yml
-          directory : ./
+          playbook: tarek-lazaar/ansible-web-static/blob/master/playbook.yml
+
           # Optional, SSH private key
           key: ${{secrets.SSH_KEY}}
           # Optional, literal inventory file contents
