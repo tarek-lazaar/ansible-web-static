@@ -66,16 +66,7 @@ jobs:
       with:
         time: '120s'
 
-    - shell: bash
-      run: |
-          touch hosts
-          adress = $(terraform output ip_adress)
-          echo "[webserver]" >> hosts
-          echo $adress >> hosts
-          echo "[webserver:vars]" >> hosts
-          echo "ansible_user = "ubuntu"" >> hosts
-          echo "cat ${{ github.workspace }}/hosts"
-          cat ${{ github.workspace }}/hosts
+
 
 
 
@@ -93,7 +84,7 @@ jobs:
           # Optional, SSH private key
           key: ${{secrets.SSH_KEY}}
           # Optional, literal inventory file contents
-          inventory: ${{ github.workspace }}/hosts
+          inventory: ./inventory/hosts.cfg
 
 
 
