@@ -13,6 +13,7 @@ jobs:
     environment: production
 
 
+
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
@@ -28,6 +29,7 @@ jobs:
       uses: hashicorp/setup-terraform@v1
       with:
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+        terraform_wrapper: false
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform init
@@ -58,28 +60,35 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: ${{ secrets.AWS_REGION }}
+    - name: Get output
+      run: address=$(terraform output ip_address)
 
-    - name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
-      wait_for:
-        port: 22
-        host: '{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}'
-        search_regex: OpenSSH
-        delay: 10
-      connection: local
-
-
-
-
-    - name: Set up Python 3.7
-      uses: actions/setup-python@v1
+    - name: executing remote ssh
+      uses: appleboy/ssh-action@master
       with:
+          host: $address
+          username: "ubuntu"
+          port: 22
+          script: whoami
+
+
+
+
+  ansible:
+    needs : terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
             python-version: 3.7
-    - name: Install dependencies
-      run: |
-            python -m pip install --upgrade pip
-            pip install ansible==2.9.2 requests
+      - name: Install dependencies
+        run: |
+                python -m pip install --upgrade pip
+                pip install ansible==2.9.2 requests
 
-    - name: run playbook
+      - name: run playbook
+        run: |
+                ansible-playbook -i ./inventory/hosts.cfg playbook.yml
 
-      run: |
-            ansible-playbook -i ./inventory/hosts.cfg playbook.yml
+
