@@ -63,11 +63,10 @@ jobs:
     - name: Sleep for 30 seconds
       uses: jakejarvis/wait-action@master
       with:
-        time: '180s'
+        time: '120s'
 
     - name : Create host file
-      env:
-        region: "eu-west-1"
+
       run : |
         touch hosts
         adress = $(terraform output ip_adress)
@@ -77,6 +76,11 @@ jobs:
         echo "ansible_user = "ubuntu"" >> hosts
         echo "cat ${{ github.workspace }}/hosts"
         cat ${{ github.workspace }}/hosts
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+
 
 
 
