@@ -75,9 +75,8 @@ jobs:
         uses: dawidd6/action-ansible-playbook@v2
         with:
           # Required, playbook filepath
-          playbook: playbook.yml
-          # Optional, directory where playbooks live
-          directory: .
+          playbook: ./playbook.yml
+
           # Optional, SSH private key
           key: ${{secrets.SSH_KEY}}
           # Optional, literal inventory file contents
