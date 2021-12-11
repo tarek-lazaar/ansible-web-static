@@ -62,32 +62,26 @@ jobs:
     - name: Get output
       run: address=$(terraform output ip_address)
 
-    - name: executing remote ssh
-      uses: appleboy/ssh-action@master
-      with:
-          host: $address
-          username: "ubuntu"
-          port: 22
-          script: whoami
-
 
 
 
   ansible:
     needs : terraform
     runs-on: ubuntu-latest
-    steps:
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v1
-        with:
-            python-version: 3.7
-      - name: Install dependencies
-        run: |
-                python -m pip install --upgrade pip
-                pip install ansible==2.9.2 requests
 
-      - name: run playbook
-        run: |
-                ansible-playbook -i ./inventory/hosts.cfg playbook.yml
+    steps:
+      - name: Run playbook
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          # Required, playbook filepath
+          playbook: playbook.yml
+          # Optional, directory where playbooks live
+          directory: ./
+          # Optional, SSH private key
+          key: ${{secrets.SSH_KEY}}
+          # Optional, literal inventory file contents
+          inventory: ./inventory/hosts.cfg
+
+
 
 
