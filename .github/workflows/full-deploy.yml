@@ -62,10 +62,6 @@ jobs:
         AWS_REGION: ${{ secrets.AWS_REGION }}
     #- name: Get output
       #run: address=$(terraform output ip_address)
-    - name: Sleep for 30 seconds
-      uses: jakejarvis/wait-action@master
-      with:
-        time: '240s'
 
 
 
