@@ -70,7 +70,11 @@ jobs:
       run : |
         output=$(terraform output ip_address)
         touch ${{ github.workspace }}/hosts
-        echo $output >> hosts
+        echo "[webserver]" >> ${{ github.workspace }}/hosts
+        echo $output >> ${{ github.workspace }}/hosts
+        echo "[webserver:vars]" >> ${{ github.workspace }}/hosts
+        echo 'ansible_user = "ubuntu"' >> ${{ github.workspace }}/hosts
+        echo $output
 
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
