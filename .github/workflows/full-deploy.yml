@@ -97,6 +97,8 @@ jobs:
         mkdir .ssh
         echo "$SSH_KEY" > .ssh/new-key-1
         chmod 600 .ssh/new-key-1
+        ansible all --list-hosts
+        cat /etc/ansible/ansible.cfg
         ansible-playbook -i ${{ github.workspace }}/inventory.hosts playbook.yml
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
