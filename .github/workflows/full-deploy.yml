@@ -65,7 +65,7 @@ jobs:
       uses: jakejarvis/wait-action@master
       with:
         time: '160s'
-    #configure and install ansible
+    #configure and install&run ansible
     - name: create inventory file & run ansible
       run: |
           output=$(terraform output ip_address)
