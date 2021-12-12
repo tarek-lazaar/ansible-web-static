@@ -66,23 +66,6 @@ jobs:
       with:
         time: '120s'
 
-    - name : create inventory file
-      run : |
-        output=$(terraform output ip_address)
-        touch hosts
-        echo "[all]" >> hosts
-        echo $output | tr -d '"' >> hosts
-        echo "[all:vars]" >> hosts
-        echo 'ansible_user = "ubuntu"' >> hosts
-        echo 'ansible_ssh_private_key_file = ".ssh/new-key-1"' >> hosts
-        cat hosts
-
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ${{ secrets.AWS_REGION }}
-        SSH_KEY: ${{secrets.SSH_KEY}}
-
 
     - name: Checkout
       uses: actions/checkout@master
@@ -94,7 +77,7 @@ jobs:
         chmod 600 .ssh/new-key-1
         ansible all --list-hosts
 
-        ansible-playbook -i hosts playbook.yml
+        ansible-playbook -i hosts.cfg playbook.yml
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
