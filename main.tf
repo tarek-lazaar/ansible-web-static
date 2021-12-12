@@ -63,10 +63,10 @@ resource "aws_instance" "my-instance" {
 
 resource "local_file" "hosts_cfg" {
 
-  content = templatefile("/home/runner/work/ansible-web-static/ansible-web-static/templates/hosts.tpl",
+  content = templatefile("./templates/hosts.tpl",
     {
       instance_address = aws_instance.my-instance.public_ip
     }
   )
-  filename = "/home/runner/work/ansible-web-static/ansible-web-static/inventory/hosts.cfg"
+  filename = "./inventory/hosts.cfg"
 }
