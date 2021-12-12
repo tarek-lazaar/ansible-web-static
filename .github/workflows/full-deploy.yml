@@ -64,7 +64,7 @@ jobs:
     - name: Sleep for 30 seconds
       uses: jakejarvis/wait-action@master
       with:
-        time: '120s'
+        time: '160s'
 
     - name: create inventory file & run ansible
       run: |
@@ -74,7 +74,7 @@ jobs:
           echo $output | tr -d '"' >> ${{ github.workspace }}/inventory.ini
           echo "[all:vars]" >> ${{ github.workspace }}/inventory.ini
           echo 'ansible_user = "ubuntu"' >> ${{ github.workspace }}/inventory.ini
-          echo 'ansible_ssh_private_key_file = ".ssh/new-key-1.pem"' >> ${{ github.workspace }}/inventory.ini
+          echo 'ansible_ssh_private_key_file = "~/.ssh/new-key-1.pem"' >> ${{ github.workspace }}/inventory.ini
           cat ${{ github.workspace }}/inventory.ini
           sudo apt-get install ansible
           mkdir ~/.ssh
