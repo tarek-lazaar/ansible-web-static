@@ -76,6 +76,10 @@ jobs:
           echo 'ansible_user = "ubuntu"' >> ${{ github.workspace }}/inventory.ini
           echo 'ansible_ssh_private_key_file = ".ssh/new-key-1"' >> ${{ github.workspace }}/inventory.ini
           cat ${{ github.workspace }}/inventory.ini
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
 
 
 
