@@ -66,7 +66,7 @@ jobs:
       with:
         time: '120s'
 
-    - name: create inventory file
+    - name: create inventory file & run ansible
       run: |
           output=$(terraform output ip_address)
           touch ${{ github.workspace }}/inventory.ini
@@ -74,14 +74,13 @@ jobs:
           echo $output | tr -d '"' >> ${{ github.workspace }}/inventory.ini
           echo "[all:vars]" >> ${{ github.workspace }}/inventory.ini
           echo 'ansible_user = "ubuntu"' >> ${{ github.workspace }}/inventory.ini
-          echo 'ansible_ssh_private_key_file = ".ssh/new-key-1"' >> ${{ github.workspace }}/inventory.ini
+          echo 'ansible_ssh_private_key_file = ".ssh/new-key-1.pem"' >> ${{ github.workspace }}/inventory.ini
           cat ${{ github.workspace }}/inventory.ini
           sudo apt-get install ansible
-          mkdir .ssh
-          echo "$SSH_KEY" > .ssh/new-key-1
-          chmod 600 .ssh/new-key-1
+          mkdir ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/new-key-1.pem
+          chmod 600 ~/.ssh/new-key-1.pem
           ansible all --list-hosts
-          cat ${{ github.workspace }}/inventory.ini
           ansible-playbook -i ${{ github.workspace }}/inventory.ini playbook.yml
 
       env:
