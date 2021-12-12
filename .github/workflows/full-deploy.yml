@@ -74,29 +74,33 @@ jobs:
         echo $output | tr -d '"' >> ${{ github.workspace }}/inventory.hosts
         echo "[all:vars]" >> ${{ github.workspace }}/inventory.hosts
         echo 'ansible_user = "ubuntu"' >> ${{ github.workspace }}/inventory.hosts
+        echo 'ansible_ssh_private_key_file = ".ssh/new-key-1"' >> ${{ github.workspace }}/inventory.hosts
         cat ${{ github.workspace }}/inventory.hosts
 
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: ${{ secrets.AWS_REGION }}
+        SSH_KEY: ${{secrets.SSH_KEY}}
+
 
     - name: Checkout
       uses: actions/checkout@master
-    - name: Run playbook
-      uses: dawidd6/action-ansible-playbook@v2
-      with:
-          # Required, playbook filepath
-          playbook: playbook.yml
-          directory: ./
+    - name: install ansible
+      uses: actions/setup-python@v1
+      run: |
+        python -m pip install --upgrade pip
+        pip install ansible==2.9.2 requests
+        mkdir .ssh
+        echo "$SSH_KEY" > .ssh/new-key-1
+        chmod 600 .ssh/new-key-1
+        ansible-playbook -i ${{ github.workspace }}/inventory.hosts playbook.yml
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        SSH_KEY: ${{secrets.SSH_KEY}}
 
-          # Optional, SSH private key
-          key: ${{secrets.SSH_KEY}}
-          # Optional, literal inventory file contents
-          inventory: ${{ github.workspace }}/inventory.hosts
-          options: |
-            --verbose
-            --inventory inventory.hosts
 
 
 
